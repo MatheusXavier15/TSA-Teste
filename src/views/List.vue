@@ -11,7 +11,7 @@ import List from './../components/list.vue'
 import Footer from './../components/footer.vue'
 
 export default {
-  name: 'List',
+  name: 'list',
   components: {
     List,
     Footer    

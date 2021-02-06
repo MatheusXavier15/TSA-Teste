@@ -13,7 +13,7 @@
         <div id="address">
           <div class="subAddress">
             <label for="userAddress">Endereço</label>
-            <input type="text" name="Address" id="userAddress" placeholder="Rua, Número e Bairro" class="form-control" required/>
+            <input v-model="userAddress" type="text" name="Address" id="userAddress" placeholder="Rua, Número e Bairro" class="form-control" required/>
           </div>
           <div class="subAddress">
             <label for="userState">Estado</label>
@@ -54,7 +54,7 @@
           </div>
           <div class="subAddress">
             <label for="userCity">Cidade</label>
-            <select name="city" id="city" required>
+            <select v-model="userCity" name="city" id="city" required>
               <option>Selecione a Cidade</option>
               <option  v-for="element in city" :key="element">{{element}}</option>
             </select>
@@ -73,7 +73,7 @@
         <div id="payConfig">
           <div class="SubPayConfig">
             <label for="cardName">Nome no Cartão</label>
-            <input type="text" name="cardName" id="cardName" placeholder="Nome no cartão" required/>
+            <input v-model="cardName" type="text" name="cardName" id="cardName" placeholder="Nome no cartão" required/>
           </div>
           <div class="SubPayConfig">
             <label for="cardData">Data de Expiração</label>
@@ -148,12 +148,12 @@
         userEmail: "",
         userCPF: "",
         userCEP:"",
+        userAddress:"",
+        userCity:"Selecione a Cidade",
+        cardName:"",
         cardNumber:"",
         cardCod:"",
       };
-    },
-    watch: {
-      selectedLand: "",
     },
     computed: {
       //função que recebe o object filtrado através do estado selecionado pelo usuário
@@ -173,7 +173,11 @@
       },
       //método que é ativado com o click do botão submit
       submit: function (event) {
-        localStorage.clear();
+        if(!this.userName || !this.userEmail || !this.userCPF){
+          // alert('preencha todos os dados')
+          return;
+        }
+        // localStorage.clear();
         //date recebe a função nativa Date() do JavaScript para instanciar a data do sistema
         const date = new Date();
         //aplica a função para mudar os algorismos e recebe o dia o mês e o ano através das funções 'get'
@@ -184,11 +188,27 @@
         storedData.push({
           nome: this.userName,
           email: this.userEmail,
-          CPF: this.userCPF,
+          CPF: this.userCPF,  
           data: dateSystem,
         });
         localStorage.setItem("storedData", JSON.stringify(storedData));
+        alert(`O usuario ${this.userName} foi cadastrado!`); //indica ao usuário que o formulário foi submetido
+        this.clearForm();
       },
+      //função que limpa o formulário depois que é enviado
+      clearForm: function() {
+        this.value = 49;
+        this.selectedLand = "Selecione o Estado";
+        this.userName = "";
+        this.userEmail = "";
+        this.userCPF = "";
+        this.userCEP ="";
+        this.userAddress="";
+        this.userCity="";
+        this.cardName="";
+        this.cardNumber ="";
+        this.cardCod ="";
+      }
     },
   };
 </script>
@@ -213,14 +233,44 @@
     margin-bottom: 6vh;
   }
 
-  form {
-    font-family: "Nunito", sans-serif;
-    margin: auto;
-    width: 40vw;
-    display: flex;
-    flex-direction: column;
-    gap: 2vh;
-    justify-content: space-between;
+  @media screen and (max-device-width: 700px) {
+    section {
+    width: 100%;
+    margin-bottom: 6vh;
+    }
+    form{
+      font-family: "Nunito", sans-serif;
+      margin: auto;
+      width: 90%;
+      display: flex;
+      flex-direction: column;
+      gap: 2vh;
+      justify-content: space-between;
+    }
+    #title div {
+      width: 100%;
+    }
+    #address {
+      display: grid;
+      grid-area: 100vh;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+      grid-column-start: 0;
+      grid-column-end: 1;
+      gap: 2vh;
+    }
+  }
+
+  @media screen and (min-device-width: 701px) {
+    form {
+      font-family: "Nunito", sans-serif;
+      margin: auto;
+      width: 40vw;
+      display: flex;
+      flex-direction: column;
+      gap: 2vh;
+      justify-content: space-between;
+    }
   }
 
   #title {
@@ -273,6 +323,7 @@
     gap: 2vh;
   }
   .subAddress, .SubPayConfig {
+    width: 100%;
     display: flex;
     gap: 2vh;
     flex-direction: column;
@@ -311,7 +362,7 @@
   #cardData {
     display: flex;
     justify-content: space-between;
-    gap: 2vh;
+    gap: 1vh;
   }
 
   #cardData select {

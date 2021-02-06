@@ -17,7 +17,7 @@
             <td>CPF</td>
             <td>Criado em</td>
           </tr>
-          <tr v-for="client in tableFilter" :key="client">
+          <tr v-for="client in tableFilter" :key="client.name">
             <td>{{client.nome}}</td>
             <td>{{client.email}}</td>
             <td>{{client.CPF}}</td>
@@ -47,6 +47,8 @@
       //função que recebe o armazenameto local e filtra os dados não nulos/vazios
       clients: function () {
         const storedData = JSON.parse(localStorage.getItem("storedData"));
+        if(!storedData)
+          return [];
         const storedFiltered = storedData.filter((e) => {
           return e.nome !== null && e.nome !== "";
         });
@@ -54,24 +56,48 @@
       },
       //função que recebe o clients e filtra de acordo com o valor pesquisado
       tableFilter: function () {
-        const params = this.filterProperty;
+        let params = this.filterProperty;
         const filtered = this.clients.filter((e) => {
           if (params !== "") {
-            return e.nome.includes(params);
-          } else { //caso não seja pesquisado nada, retorna o array inteiro
-            return this.clients;
-          }
+            params = params.toLowerCase();
+            return (
+              e.nome.toLowerCase().includes(params) ||
+              e.email.toLowerCase().includes(params) ||
+              e.CPF.includes(params) ||
+              e.data.includes(params)
+            )
+          } 
+          //caso não seja pesquisado nada, retorna todos os elementos
+          return true;
         });
         return this.clients && filtered;
       },
-    },
-    watch: {
-      filterProperty: "",
     },
   };
 </script>
 
 <style>
+  @media screen and (max-device-width: 701px) {
+    #title div {
+      width: 100%;
+    }
+    #content {
+      width: 75vw!important;
+      margin: auto;
+      }
+      
+  table {
+    font-weight: bold;
+    font-family: "Nunito", sans-serif;
+    border-collapse: collapse;
+    margin-top: 2vh;
+    margin-bottom: 5vh;
+    border-spacing: 0px;
+    max-width: 100%;
+    height: 70vh;
+     font-size: clamp(1em, 1em + 1vw, 1.5em);
+  }
+  }
   #contentList {
     font-family: "Nunito", sans-serif;
     margin: auto;
@@ -80,6 +106,7 @@
     gap: 2vh;
     justify-content: space-between;
   }
+  
   #title {
     width: 100%;
     height: 15vh;
@@ -106,7 +133,7 @@
   }
 
   #content {
-    width: 60vw;
+    width: 75vw;
     margin: auto;
   }
 
@@ -144,7 +171,7 @@
     margin-top: 2vh;
     margin-bottom: 5vh;
     border-spacing: 0px;
-    width: 60vw;
+    width: 75vw;
     height: 70vh;
   }
 

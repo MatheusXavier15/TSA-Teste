@@ -2,7 +2,7 @@
   <div id="app">
     <header id="nav">
       <router-link to="/">Cadastro</router-link>
-      <router-link to="/Lista">Lista</router-link>
+      <router-link to="/list">Lista</router-link>
     </header>
     <router-view/>
   </div>

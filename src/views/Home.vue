@@ -12,7 +12,7 @@ import Register from './../components/register.vue'
 import Footer from './../components/footer.vue'
 
 export default {
-  name: 'Home',
+  name: 'home',
   components: {
     Register,
     Footer
